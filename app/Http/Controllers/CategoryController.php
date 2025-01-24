@@ -21,7 +21,7 @@ class CategoryController extends Controller
     public function index()
     {
         // get all categories
-        $categories = $this->query->query()->get();
+        $categories = $this->query->query()->withCount('products')->get();
         return Inertia::render('Category/Index', ['categories' => CategoryResource::collection($categories)]);
     }
 
