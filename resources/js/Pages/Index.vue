@@ -1,5 +1,6 @@
 <script setup>
 import Card from 'primevue/card';
+import Breadcrumb from "primevue/breadcrumb";
 
 const {totalProducts, totalPurchases, totalSuppliers, totalLedgers} = defineProps({
   totalPurchases: {
@@ -23,6 +24,7 @@ const {totalProducts, totalPurchases, totalSuppliers, totalLedgers} = defineProp
 
 <template>
   <DefaultLayout title="Home">
+    <Breadcrumb :home="{icon: 'pi pi-home'}" />
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
       <Card>
         <template #title>

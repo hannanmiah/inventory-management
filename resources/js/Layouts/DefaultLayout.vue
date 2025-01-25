@@ -1,6 +1,8 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
 import NavBar from "@/Components/NavBar.vue";
+import Toast from "primevue/toast";
+import ConfirmDialog from "primevue/confirmdialog";
 
 const {title} = defineProps({
   title: {
@@ -19,6 +21,8 @@ const {title} = defineProps({
       <slot/>
     </main>
   </div>
+  <Toast/>
+  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <style scoped>

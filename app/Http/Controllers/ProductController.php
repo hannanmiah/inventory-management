@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         // get all products
-        $products = $this->productQuery->query()->get();
+        $products = $this->productQuery->query()->with('category')->get();
         return Inertia::render('Product/Index', ['products' => ProductResource::collection($products)]);
     }
 

@@ -24,7 +24,7 @@ class PurchaseController extends Controller
     public function index()
     {
         // get all purchases
-        $purchases = $this->purchaseQuery->query()->get();
+        $purchases = $this->purchaseQuery->query()->with(['supplier','purchaseItems.product'])->get();
         return Inertia::render('Purchase/Index', ['purchases' => PurchaseResource::collection($purchases)]);
     }
 

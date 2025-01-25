@@ -94,7 +94,11 @@ const items = ref([
 
 <template>
   <div class="card">
-    <Menubar :model="items"/>
+    <Menubar :model="items">
+      <template #start>
+        <h1 class="text-lg md:text-2xl font-bold">Inventory</h1>
+      </template>
+    </Menubar>
   </div>
 </template>
 

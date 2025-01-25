@@ -13,6 +13,13 @@ class Ledger extends Model
 
     protected $fillable = ['supplier_id', 'credit', 'debit', 'balance', 'transaction_date', 'remarks'];
 
+    protected $casts = [
+        'credit' => 'integer',
+        'debit' => 'integer',
+        'balance' => 'integer',
+        'transaction_date' => 'date'
+    ];
+
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
