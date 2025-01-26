@@ -11,7 +11,7 @@ class UpdateSupplierRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdateSupplierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['string'],
+            'address' => ['max:255'],
+            'contact_info' => ['array', 'filled'],
+            'contact_info.phone' => ['required', 'string'],
+            'contact_info.email' => ['required', 'email'],
         ];
     }
 }

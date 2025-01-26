@@ -7,9 +7,11 @@ use App\Actions\Purchase\UpdateItems;
 use App\Http\Requests\StorePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
 use App\Http\Resources\PurchaseResource;
+use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Supplier;
 use App\Queries\PurchaseQuery;
+use Illuminate\Support\Facades\Concurrency;
 use Inertia\Inertia;
 
 class PurchaseController extends Controller
@@ -24,7 +26,7 @@ class PurchaseController extends Controller
     public function index()
     {
         // get all purchases
-        $purchases = $this->purchaseQuery->query()->with(['supplier','purchaseItems.product'])->get();
+        $purchases = $this->purchaseQuery->query()->with(['supplier', 'purchaseItems.product'])->get();
         return Inertia::render('Purchase/Index', ['purchases' => PurchaseResource::collection($purchases)]);
     }
 
@@ -33,9 +35,16 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $suppliers = Supplier::all();
+        [$suppliers, $products] = Concurrency::run([
+            function () {
+                return Supplier::select(['id', 'name'])->get();
+            },
+            function () {
+                return Product::select(['id', 'name'])->get();
+            }
+        ]);
         // return create page
-        return Inertia::render('Purchase/Create', ['suppliers' => $suppliers]);
+        return Inertia::render('Purchase/Create', ['suppliers' => $suppliers, 'products' => $products]);
     }
 
     /**
@@ -64,9 +73,17 @@ class PurchaseController extends Controller
      */
     public function edit(Purchase $purchase)
     {
-        $suppliers = Supplier::all();
+        [$suppliers, $products] = Concurrency::run([
+            function () {
+                return Supplier::select(['id', 'name'])->get();
+            },
+            function () {
+                return Product::select(['id', 'name'])->get();
+            }
+        ]);
+        $purchase->load(['purchaseItems']);
         // return edit page
-        return Inertia::render('Purchase/Edit', ['purchase' => PurchaseResource::make($purchase), 'suppliers' => $suppliers]);
+        return Inertia::render('Purchase/Edit', ['purchase' => PurchaseResource::make($purchase), 'suppliers' => $suppliers, 'products' => $products]);
     }
 
     /**

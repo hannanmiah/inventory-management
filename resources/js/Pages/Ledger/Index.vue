@@ -51,7 +51,7 @@ function destroy(id) {
 </script>
 
 <template>
-  <DefaultLayout title="Products">
+  <DefaultLayout title="Ledgers">
     <Breadcrumb :home="{icon: 'pi pi-home', url: '/'}" :model="items"/>
     <Card>
       <template #title>

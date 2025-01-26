@@ -11,7 +11,7 @@ class StoreLedgerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreLedgerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'supplier_id' => ['required', 'integer', 'exists:suppliers,id'],
+            'credit' => ['required', 'integer'],
+            'debit' => ['required', 'integer'],
+            'transaction_date' => ['required', 'date'],
+            'remarks' => ['nullable', 'string'],
         ];
     }
 }
