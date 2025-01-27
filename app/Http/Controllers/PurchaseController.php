@@ -66,7 +66,10 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
-        //
+        // load purchaseItems
+        $purchase->load(['purchaseItems.product','supplier']);
+        // return show page
+        return Inertia::render('Purchase/Show', ['purchase' => PurchaseResource::make($purchase)]);
     }
 
     /**

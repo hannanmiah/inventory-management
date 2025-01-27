@@ -23,10 +23,10 @@ class UpdateSupplierRequest extends FormRequest
     {
         return [
             'name' => ['string'],
-            'address' => ['max:255'],
-            'contact_info' => ['array', 'filled'],
-            'contact_info.phone' => ['required', 'string'],
-            'contact_info.email' => ['required', 'email'],
+            'address' => ['string','max:255'],
+            'contact_info' => ['array'],
+            'contact_info.phone' => [ 'string'],
+            'contact_info.email' => [ 'email'],
         ];
     }
 }

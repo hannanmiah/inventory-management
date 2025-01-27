@@ -20,7 +20,7 @@ The Inventory Management project is designed to help manage and track inventory 
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/inventory-management.git
+   git clone https://github.com/hannanmiah/inventory-management.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -66,8 +66,8 @@ The Inventory Management project is designed to help manage and track inventory 
 | /suppliers  | /api/suppliers  |
 | /categories | /api/categories |
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Testing
+```shell
+php artisan test
+```
 
-## Acknowledgments
-- Mention any libraries, tools, or resources that were helpful in the development of this project.

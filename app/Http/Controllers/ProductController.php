@@ -52,7 +52,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        // load category
+        $product->load('category');
+        // return show page
+        return Inertia::render('Product/Show', ['product' => ProductResource::make($product)]);
     }
 
     /**
