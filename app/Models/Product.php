@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Concerns\GeneratesSku;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, GeneratesSku;
+    use HasFactory, GeneratesSku,SoftDeletes,CascadeSoftDeletes;
 
     protected $fillable = ['category_id', 'name', 'sku', 'price', 'initial_stock_quantity', 'current_stock_quantity'];
 
@@ -20,6 +22,8 @@ class Product extends Model
         'initial_stock_quantity' => 'integer',
         'current_stock_quantity' => 'integer',
     ];
+
+    protected $cascadeDeletes = ['purchaseItems'];
 
     public function category(): BelongsTo
     {

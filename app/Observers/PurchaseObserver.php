@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\Purchase\ProductPurchased;
 use App\Models\Purchase;
 
 class PurchaseObserver
@@ -11,12 +12,8 @@ class PurchaseObserver
      */
     public function created(Purchase $purchase): void
     {
-        // decrease product stock
-        $purchase->loadMissing(['purchaseItems.product']);
-        foreach ($purchase->purchaseItems as $item) {
-            $item->product->decrement('current_stock_quantity', $item->quantity);
-            $item->product->save();
-        }
+        // fire purchased event
+        ProductPurchased::dispatch($purchase);
     }
 
     /**

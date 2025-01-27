@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('price');
             $table->unsignedInteger('initial_stock_quantity')->default(0);
             $table->unsignedInteger('current_stock_quantity');
+            $table->softDeletes(); // Soft delete for historical tracking of deleted products
             $table->timestamps();
         });
     }

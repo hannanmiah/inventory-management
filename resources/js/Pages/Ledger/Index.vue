@@ -3,20 +3,57 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Card from "primevue/card";
 import Breadcrumb from 'primevue/breadcrumb';
-import {ref} from 'vue'
-import {useDateFormat} from "@vueuse/core";
+import {computed, reactive, ref} from 'vue'
+import {useDateFormat, watchDebounced} from "@vueuse/core";
 import Button from "primevue/button";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {router} from "@inertiajs/vue3";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import DatePicker from 'primevue/datepicker';
 
-const {ledgers} = defineProps({
+const {ledgers, suppliers} = defineProps({
   ledgers: {
     type: Object,
     required: true,
-  }
+  },
+  suppliers: {
+    type: Array,
+    required: true,
+  },
 })
 
+const filter = reactive({
+  balance: '',
+  supplier_id: '',
+})
+
+const dates = ref([])
+
+const filters = computed(() => {
+  const result = {}
+  Object.keys(filter).forEach(key => {
+    result[`filter[${key}]`] = filter[key]
+  })
+  if (dates.value.length > 0) {
+    // result['filter[transaction_between]'] = dates.value.join(',')
+    result['filter[transaction_between]'] = dates.value.map(date => date ? useDateFormat(date, 'YYYY-MM-DD').value : '').join(',')
+  }
+  return result
+})
+
+watchDebounced([filter, dates], () => {
+  router.reload({
+    data: filters.value
+  })
+}, {debounce: 500, maxWait: 500})
+
+const resetFilters = () => {
+  filter.balance = ''
+  filter.supplier_id = ''
+  dates.value = ['', '']
+}
 const items = ref([
   {label: 'Ledgers'},
 ]);
@@ -55,13 +92,23 @@ function destroy(id) {
     <Breadcrumb :home="{icon: 'pi pi-home', url: '/'}" :model="items"/>
     <Card>
       <template #title>
-        <section class="flex justify-between items-center">
-          <h1 class="text-lg md:text-2xl font-medium md:font-bold">Ledgers</h1>
-          <Button as="Link" label="New" :href="route('ledgers.create')" icon="pi pi-plus" class="mr-2"/>
+        <section class="flex space-x-2 md:space-x-4">
+          <Button icon="pi pi-filter-slash" @click="resetFilters" severity="secondary"/>
+          <InputText v-model="filter.balance" type="number" placeholder="Filter with balance"/>
+          <DatePicker v-model="dates" selectionMode="range" :manualInput="false" dateFormat="dd-mm-yy"
+                      placeholder="select transaction date range"/>
+          <Select v-model="filter.supplier_id" option-value="id" option-label="name" :options="suppliers"
+                  placeholder="Filter By Supplier"/>
         </section>
       </template>
       <template #content>
         <DataTable :value="ledgers.data" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]">
+          <template #header>
+            <section class="flex justify-between items-center">
+              <h1 class="text-lg md:text-2xl font-medium md:font-bold">Ledgers</h1>
+              <Button as="Link" label="New" :href="route('ledgers.create')" icon="pi pi-plus" class="mr-2"/>
+            </section>
+          </template>
           <Column field="id" header="ID"/>
           <Column field="supplier" header="Supplier">
             <template #body="slotProps">

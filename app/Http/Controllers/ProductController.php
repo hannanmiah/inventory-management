@@ -21,9 +21,10 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $categories = Category::select('id', 'name')->get();
         // get all products
         $products = $this->productQuery->query()->with('category')->get();
-        return Inertia::render('Product/Index', ['products' => ProductResource::collection($products)]);
+        return Inertia::render('Product/Index', ['products' => ProductResource::collection($products),'categories' => $categories]);
     }
 
     /**

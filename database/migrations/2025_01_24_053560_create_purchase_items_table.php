@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity');
             $table->unsignedBigInteger('unit_price');
             $table->unsignedBigInteger('total_price');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

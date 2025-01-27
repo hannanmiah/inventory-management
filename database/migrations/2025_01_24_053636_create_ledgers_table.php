@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('balance');
             $table->date('transaction_date')->nullable();
             $table->text('remarks')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

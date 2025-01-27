@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('total_amount');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

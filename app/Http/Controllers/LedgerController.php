@@ -21,9 +21,10 @@ class LedgerController extends Controller
      */
     public function index()
     {
+        $suppliers = Supplier::select(['id', 'name'])->get();
         // get all ledgers
         $ledgers = $this->ledgerQuery->query()->with(['supplier'])->get();
-        return Inertia::render('Ledger/Index', ['ledgers' => LedgerResource::collection($ledgers)]);
+        return Inertia::render('Ledger/Index', ['ledgers' => LedgerResource::collection($ledgers), 'suppliers' => $suppliers]);
     }
 
     /**

@@ -3,22 +3,55 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Card from "primevue/card";
 import Breadcrumb from 'primevue/breadcrumb';
-import {ref} from 'vue'
+import {ref, reactive, computed} from 'vue'
 import {useDateFormat} from "@vueuse/core";
 import Button from "primevue/button";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {router} from "@inertiajs/vue3";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import {watchDebounced} from "@vueuse/core";
 
-const {products} = defineProps({
+const {products, categories} = defineProps({
   products: {
     type: Object,
     required: true,
-  }
+  },
+  categories: {
+    type: Array,
+    required: true,
+  },
 })
 
+const filter = reactive({
+  name: '',
+  sku: '',
+  category_id: '',
+})
+
+const filters = computed(() => {
+  const result = {}
+  Object.keys(filter).forEach(key => {
+    result[`filter[${key}]`] = filter[key]
+  })
+  return result
+})
+
+watchDebounced(filter, () => {
+  router.reload({
+    data: filters.value
+  })
+}, {debounce: 500, maxWait: 500})
+
+const resetFilters = () => {
+  filter.name = ''
+  filter.sku = ''
+  filter.category_id = ''
+}
+
 const items = ref([
-  { label: 'Products' },
+  {label: 'Products'},
 ]);
 
 const confirm = useConfirm();
@@ -52,16 +85,25 @@ function destroy(id) {
 
 <template>
   <DefaultLayout title="Products">
-    <Breadcrumb :home="{icon: 'pi pi-home', url: '/'}" :model="items" />
+    <Breadcrumb :home="{icon: 'pi pi-home', url: '/'}" :model="items"/>
     <Card>
       <template #title>
-        <section class="flex justify-between items-center">
-          <h1 class="text-lg md:text-2xl font-medium md:font-bold">Products</h1>
-          <Button as="Link" label="New" :href="route('products.create')" icon="pi pi-plus" class="mr-2"/>
+        <section class="flex space-x-2 md:space-x-4">
+          <Button icon="pi pi-filter-slash" @click="resetFilters" severity="secondary"/>
+          <InputText v-model="filter.name" placeholder="Filter By Name"/>
+          <InputText v-model="filter.sku" placeholder="Filter By SKU"/>
+          <Select v-model="filter.category_id" option-value="id" option-label="name" :options="categories"
+                  placeholder="Filter By Category"/>
         </section>
       </template>
       <template #content>
         <DataTable :value="products.data" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]">
+          <template #header>
+            <section class="flex justify-between items-center">
+              <h1 class="text-lg md:text-2xl font-medium md:font-bold">Products</h1>
+              <Button as="Link" label="New" :href="route('products.create')" icon="pi pi-plus" class="mr-2"/>
+            </section>
+          </template>
           <Column field="id" header="ID"/>
           <Column field="name" header="Name"/>
           <Column field="sku" header="SKU"/>
