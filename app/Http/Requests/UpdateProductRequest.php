@@ -24,7 +24,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'category_id' => 'exists:categories,id',
             'name' => 'string|max:255',
-            'price' => 'integer',
+            'price' => 'integer|min:0',
             'current_stock_quantity' => ['integer', 'min:0']
         ];
     }

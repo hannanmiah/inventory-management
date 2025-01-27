@@ -24,7 +24,7 @@ class StoreProductRequest extends FormRequest
         return [
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
-            'price' => 'required|integer',
+            'price' => 'required|integer|min:0',
             'initial_stock_quantity' => 'required|integer',
         ];
     }
